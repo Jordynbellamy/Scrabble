@@ -41,8 +41,7 @@ public class Player {
      * @return the rack list
      */
     public List<Tile> getRack(){
-        List<Tile> copyRack = new ArrayList<>(rack);
-        return copyRack;
+        return new ArrayList<>(rack);
     }
 
     /** Refill the rack when it doesn't have up to 7 tiles
@@ -79,6 +78,14 @@ public class Player {
             }
         }
         return true;
+    }
+
+    /**
+     * Add a single tile to the player's rack
+     * @param tile the tile to add
+     */
+    public void addTile(Tile tile){
+        rack.add(tile);
     }
 
     /**Remove the found letters from the players tiles and return the removed list, return an empty list if nothing is found

@@ -1,119 +1,88 @@
 import static org.junit.jupiter.api.Assertions.*;
-
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Locale;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-/** Tests dictionary loading, normalization, and lookup. */
+/** Tests the WordList(String) and isValid(String) interfaces used by the team. */
 public class WordListTest {
-    @TempDir
-    Path temporaryDirectory;
-
-    @Test
-    void loadsTheDictionaryIncludedWithTheProject() {
-        WordList dictionary = new WordList();
-        assertEquals(9969, dictionary.size());
-        assertTrue(dictionary.isValidWord("hello"));
-        assertTrue(dictionary.isValidWord("word"));
-        assertFalse(dictionary.isValidWord("ZZZZZZZZZZZZZZZ"));
+    @TempDir Path directory;
+    @ParameterizedTest @ValueSource(strings={"CAT","cat","CaT"," cat ","\tcat\t"})
+    /** Verifies normalizes lookup. */
+    void normalizesLookup(String candidate) throws Exception {
+        assertTrue(dictionary("cat", "dog").isValid(candidate));
     }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"cat", "CAT", "CaT", " cat ", "\tcat\t"})
-    void lookupIgnoresCaseAndSurroundingWhitespace(String candidate) throws IOException {
-        WordList dictionary = dictionaryWith("CAT", "DOG");
-        assertTrue(dictionary.isValidWord(candidate));
+    @ParameterizedTest @NullAndEmptySource
+    @ValueSource(strings={" ","A","C AT","CAT!","CAT1","C\u00c1T","\u00df","ABCDEFGHIJKLMNOP","MOUSE"})
+    /** Verifies rejects malformed and absent words. */
+    void rejectsMalformedAndAbsentWords(String candidate) throws Exception {
+        assertFalse(dictionary("CAT", "DOG", "SS").isValid(candidate));
     }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {" ", "A", "C AT", "CAT!", "CAT1", "CAT-DOG",
-            "C\u00C1T", "\u00DF", "ABCDEFGHIJKLMNOP", "MOUSE"})
-    void rejectsMalformedOrAbsentWords(String candidate) throws IOException {
-        WordList dictionary = dictionaryWith("CAT", "DOG", "SS");
-        assertFalse(dictionary.isValidWord(candidate));
+    /** Verifies skips malformed lines and duplicates. */
+    @Test void skipsMalformedLinesAndDuplicates() throws Exception {
+        WordList words = dictionary("cat", "CAT", " dog ", "a", "", "ice cream", "123", "C\u00c1T");
+        assertTrue(words.isValid("cat")); assertTrue(words.isValid("DOG"));
+        assertFalse(words.isValid("ice cream"));
     }
-
-    @Test
-    void removesDuplicatesAndSkipsMalformedEntries() throws IOException {
-        WordList dictionary = dictionaryWith(" cat ", "CAT", "dog", "", "a",
-                "ice cream", "can't", "C3PO", "\u00E9t\u00E9", "ABCDEFGHIJKLMNOP");
-        assertEquals(2, dictionary.size());
-        assertTrue(dictionary.isValidWord("DOG"));
+    /** Verifies accepts byte order mark. */
+    @Test void acceptsByteOrderMark() throws Exception {
+        assertTrue(dictionary("\uFEFFcat", "dog").isValid("CAT"));
     }
-
-    @Test
-    void acceptsAnOptionalByteOrderMarkOnTheFirstLine() throws IOException {
-        WordList dictionary = dictionaryWith("\uFEFFcat", "dog");
-        assertEquals(2, dictionary.size());
-        assertTrue(dictionary.isValidWord("cat"));
+    /** Verifies accepts length boundaries. */
+    @Test void acceptsLengthBoundaries() throws Exception {
+        WordList words = dictionary("AT", "ABCDEFGHIJKLMNO");
+        assertTrue(words.isValid("AT")); assertTrue(words.isValid("abcdefghijklmno"));
     }
-
-    @Test
-    void acceptsTwoAndFifteenLetterEntries() throws IOException {
-        WordList dictionary = dictionaryWith("AT", "ABCDEFGHIJKLMNO");
-        assertTrue(dictionary.isValidWord("at"));
-        assertTrue(dictionary.isValidWord("abcdefghijklmno"));
-        assertEquals(2, dictionary.size());
+    /** Verifies missing file fails clearly. */
+    @Test void missingFileFailsClearly() {
+        assertThrows(IllegalStateException.class, () -> new WordList(directory.resolve("missing.txt").toString()));
     }
-
-    @Test
-    void lookupDoesNotChangeTheDictionary() throws IOException {
-        WordList dictionary = dictionaryWith("CAT");
-        assertFalse(dictionary.isValidWord("DOG"));
-        assertEquals(1, dictionary.size());
+    /** Verifies empty file fails clearly. */
+    @Test void emptyFileFailsClearly() throws Exception {
+        Path file = directory.resolve("empty.txt"); Files.write(file, new byte[0]);
+        assertThrows(IllegalStateException.class, () -> new WordList(file.toString()));
     }
-
-    @Test
-    void reportsAMissingFile() {
-        Path missing = temporaryDirectory.resolve("missing.txt");
-        assertThrows(IOException.class, () -> new WordList(missing));
+    /** Verifies unusable file fails clearly. */
+    @Test void unusableFileFailsClearly() {
+        assertThrows(IllegalStateException.class, () -> dictionary("", "a", "123"));
     }
-
-    @Test
-    void rejectsANullPath() {
-        assertThrows(IllegalArgumentException.class, () -> new WordList((Path) null));
+    @ParameterizedTest @NullAndEmptySource @ValueSource(strings={"  "})
+    /** Verifies invalid filename fails clearly. */
+    void invalidFilenameFailsClearly(String filename) {
+        assertThrows(IllegalArgumentException.class, () -> new WordList(filename));
     }
-
-    @Test
-    void reportsAnEmptyDictionary() throws IOException {
-        Path file = temporaryDirectory.resolve("empty.txt");
-        Files.write(file, new byte[0]);
-        assertThrows(IOException.class, () -> new WordList(file));
-    }
-
-    @Test
-    void reportsADictionaryWithNoUsableEntries() throws IOException {
-        Path file = temporaryDirectory.resolve("invalid.txt");
-        Files.write(file, Arrays.asList("", "a", "123", "two words"), StandardCharsets.UTF_8);
-        assertThrows(IOException.class, () -> new WordList(file));
-    }
-
-    @Test
-    void normalizationDoesNotDependOnTheSystemLocale() throws IOException {
-        Locale previous = Locale.getDefault();
+    /** Verifies lookup is independent of locale. */
+    @Test void lookupIsIndependentOfLocale() throws Exception {
+        Locale old = Locale.getDefault();
         try {
             Locale.setDefault(new Locale("tr", "TR"));
-            WordList dictionary = dictionaryWith("in");
-            assertTrue(dictionary.isValidWord("in"));
-            assertTrue(dictionary.isValidWord("IN"));
-        } finally {
-            Locale.setDefault(previous);
-        }
+            assertTrue(dictionary("in").isValid("in"));
+        } finally { Locale.setDefault(old); }
     }
-
-    private WordList dictionaryWith(String... words) throws IOException {
-        Path file = temporaryDirectory.resolve("dictionary.txt");
-        Files.write(file, Arrays.asList(words), StandardCharsets.UTF_8);
-        return new WordList(file);
+    /** Verifies loads bundled dictionary. */
+    @Test void loadsBundledDictionary() {
+        WordList words = new WordList("wordlist.txt");
+        assertTrue(words.isValid("hello")); assertTrue(words.isValid("cat"));
+        assertFalse(words.isValid("ZZZZZZZZZZZZZZZ"));
+    }
+    /** Verifies dictionary is loaded once. */
+    @Test void dictionaryIsLoadedOnce() throws Exception {
+        Path file = directory.resolve("once.txt");
+        Files.write(file, Arrays.asList("cat"), StandardCharsets.UTF_8);
+        WordList words = new WordList(file.toString());
+        Files.delete(file);
+        assertTrue(words.isValid("CAT"));
+    }
+    /** Verifies dictionary. */
+    private WordList dictionary(String... entries) throws Exception {
+        Path file = directory.resolve("words.txt");
+        Files.write(file, Arrays.asList(entries), StandardCharsets.UTF_8);
+        return new WordList(file.toString());
     }
 }

@@ -1,8 +1,6 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -83,7 +81,7 @@ public class PlayerTest {
 
         player2.removeLetters(letters);
         assertTrue(player2.hasLetters("E"));
-        assertTrue(player2.hasLetters("L"));;
+        assertTrue(player2.hasLetters("L"));
     }
     /**
      * Tests that Exchange takes the given letters off the rack, making sure it satisfies all conditions before exchanging

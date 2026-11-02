@@ -37,23 +37,24 @@ Word list - a HashSet<String>, so checking if a word exists is quick instead of 
 Testing
 JUnit 5 tests are in test/:
 
-TileTest - letter and points, lowercase gets converted to uppercase, toString
-TileBagTest - starts with 98 tiles, correct letter counts, drawing and returning tiles, drawing from an almost empty or empty bag
-PlayerTest - name and score, refilling the rack, hasLetters with repeated letters, removing letters, exchanging (normal case, missing letters, not enough tiles in the bag), adding to the score
-BoardTest - placing tiles, not overwriting tiles, first word covering the centre, words connecting to the board
-WordListTest - valid and invalid words, upper and lowercase input
-ScorerTest - finding every word a move makes, including cross-words, and scoring them
-GameModelTest - number of players, reading Scrabble notation, turn order
+- TileTest - letter and points, lowercase gets converted to uppercase, toString
+- TileBagTest - starts with 98 tiles, correct letter counts, drawing and returning tiles, drawing from an almost empty or empty bag
+- PlayerTest - name and score, refilling the rack, hasLetters with repeated letters, removing letters, exchanging (normal case, missing letters, not enough tiles in the bag), adding to the score
+- BoardTest - placing tiles, not overwriting tiles, first word covering the centre, words connecting to the board
+- WordListTest - valid and invalid words, upper and lowercase input
+- ScorerTest - finding every word a move makes, including cross-words, and scoring them
+- GameModelTest - number of players, reading Scrabble notation, turn order
+  
 We didn't test the shuffle directly since it's random and a test for it could fail by chance.
 
 Failing tests: none, all tests pass.
 
 Known issues
-Player.addTile doesn't check if the rack is full. It's only used to set up racks in tests, so it doesn't affect the game.
-Contributions
-Milestone 1
+- Player.addTile doesn't check if the rack is full. It's only used to set up racks in tests, so it doesn't affect the game.
 
-Kosi Chukwuezi - project setup, Tile, TileBag, Player (including tile exchange), their JUnit tests, UML class diagram, exchange sequence diagram
+Contributions: Milestone 1
+
+Kosi Chukwuezi - project setup, Tile, TileBag, Player, their JUnit tests, README
 Jackson - WordList, Scorer and their tests
 Jordyn Bellamy - Board and its tests
 Peculiar  - GameModel, its tests, placing-a-word sequence diagram, building the jar

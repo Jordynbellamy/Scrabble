@@ -22,6 +22,7 @@ public class BoardTest {
      */
     @BeforeEach
     public void setUp() {
+
         board = new Board(Board.SIZE, Board.SIZE);
     }
 
@@ -145,7 +146,7 @@ public class BoardTest {
         assertNull(board.getTile(CENTRE, 9));//Nothing placed after the last letter
 
         //top to bottom through the A of CAT
-        board.placeWord(makeTiles("HT"), 6, CENTRE, false);
+        board.placeWord(makeTiles("HAT"), 6, CENTRE, false);
         assertEquals('H', board.getTile(6, CENTRE).getLetter());
         assertEquals('A', board.getTile(7, CENTRE).getLetter());//The A from CAT is still there
         assertEquals('T', board.getTile(8, CENTRE).getLetter());

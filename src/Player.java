@@ -119,8 +119,7 @@ public class Player {
     /**
      * Exchanges the given tiles for new ones from the bag, ending the player's turn.
      * New tiles are drawn before the old ones are returned.
-     * @param letters the letters to exchange
-     * @param bag the tilebag
+     *
      * @return true if the exchange was completed, false otherwise
      */
     public boolean exchange(String letters, TileBag bag){

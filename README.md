@@ -7,19 +7,21 @@ Running it
 Make sure wordlist.txt is in the same folder as the jar, then run:
 
 java -jar Scrabble.jar
-Moves use Scrabble notation:
 
-8H HELLO places HELLO across starting at row 8, column H
-H8 HELLO places it down instead
-exchange AEI swaps those tiles and ends your turn
-pass skips your turn
-What's included
-Scrabble.jar - source code, compiled classes and JUnit tests
-src/ - the game code
-test/ - JUnit 5 tests
-wordlist.txt - the word list
-UML class diagram
-2 sequence diagrams: exchanging tiles and placing a word
+Moves use Scrabble notation:
+- 8H HELLO places HELLO across starting at row 8, column H
+- H8 HELLO places it down instead
+- exchange AEI swaps those tiles and ends your turn
+- pass skips your turn
+  
+What's included: 
+- Scrabble.jar - source code, compiled classes and JUnit tests
+- src/ - the game code
+- test/ - JUnit 5 tests
+- wordlist.txt - the word list
+- UML class diagram
+- 2 sequence diagrams: exchanging tiles and placing a word
+  
 Current state
 Milestone 1 is complete. The game supports 2-4 players, shows each player's tiles, lets players place words using Scrabble notation, and checks every move (real words only, no overwriting tiles, reusing tiles already on the board). Scores update after each word, and players can exchange tiles to pass their turn. After every turn the board, scores and the next player's tiles are printed.
 

@@ -56,8 +56,8 @@ Contributions: Milestone 1
 
 Kosi Chukwuezi: project setup, Tile, TileBag, Player, their JUnit tests, README
 
-Jackson: WordList, Scorer and their tests, exchanging tiles sequence diagram
+Iniodu Jackson: WordList, Scorer and their tests, exchanging tiles sequence diagram
 
 Jordyn Bellamy: Create repository, Board and its tests, UML diagram, building the jar, submitting
 
-Peculiar: GameModel, its tests, placing-a-word sequence diagram
+Peculiar Ojediran: GameModel, its tests, placing-a-word sequence diagram

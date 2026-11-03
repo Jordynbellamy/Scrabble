@@ -177,4 +177,24 @@ public class BoardTest {
         assertTrue(text.contains("| B | A | R |"));
         assertFalse(text.contains("*"));
     }
+
+    /**
+     * Tests that the board is labelled the same way players type moves, columns A to O
+     * across the top and rows 1 to 15 down the side, so the centre square is at row 8, column H
+     */
+    @Test
+    public void testToStringLabels() {
+        String text = board.toString();
+
+        //The top of the board lists the column letters
+        assertTrue(text.contains("  A   B   C   D   E   F   G   H   I   J   K   L   M   N   O"));
+
+        //Rows start at 1 and end at 15, there is no row 0
+        assertTrue(text.contains("\n 1 |"));
+        assertTrue(text.contains("\n15 |"));
+        assertFalse(text.contains("\n 0 |"));
+
+        //Row 8 has the centre star in its 8th square, which is column H
+        assertTrue(text.contains(" 8 |   |   |   |   |   |   |   | * |"));
+    }
 }

@@ -164,12 +164,12 @@ public class Board {
      */
     @Override
     public String toString() {
-        //Column numbers and the line between rows
+        //Column letters and the line between rows
         String board = "   ";
         String line = "   ";
 
         for (int col = 0; col < columns; col++) {
-            board += String.format("  %-2d", col);
+            board += String.format("  %-2c", (char) ('A' + col));
             line += "+---";
         }
         board += "\n";
@@ -177,7 +177,7 @@ public class Board {
 
         for (int row = 0; row < rows; row++) {
             board += line;
-            board += String.format("%2d ", row); //Row number on the left
+            board += String.format("%2d ", row + 1); //Row number on the left, starting at 1
 
             for (int col = 0; col < columns; col++) {
                 char letter = ' ';

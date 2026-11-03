@@ -58,6 +58,6 @@ Kosi Chukwuezi: project setup, Tile, TileBag, Player, their JUnit tests, README
 
 Iniodu Jackson: WordList, Scorer and their tests, exchanging tiles sequence diagram
 
-Jordyn Bellamy: Create repository, Board and its tests, UML diagram, building the jar, submitting
+Jordyn Bellamy: Create repository, Board and its tests, UML diagram, building the jar, submitting to Brightspace
 
 Peculiar Ojediran: GameModel, its tests, placing-a-word sequence diagram

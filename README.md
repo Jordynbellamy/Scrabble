@@ -45,11 +45,17 @@ Testing:
 JUnit 5 tests are in test/:
 
 TileTest - letter and points, lowercase gets converted to uppercase, toString
+
 TileBagTest - starts with 98 tiles, correct letter count, drawing and returning tiles, drawing every tile until the bag is empty
+
 PlayerTest - name and score, refilling the rack, hasLetters with repeated letters, removing letters, exchanging (normal case, missing letters, not enough tiles in the bag), adding to the score
+
 BoardTest - placing tiles, not overwriting tiles, first word covering the centre, board labels matching Scrabble notation
+
 WordListTest - valid and invalid words, upper and lowercase input
+
 ScorerTest - letter values, word scores, scoring a new word, extending an existing word and the seven-tile bonus
+
 GameModelTest - number of players, reading Scrabble notation, turn order
   
 We didn't test the shuffle directly since it's random and a test for it could fail by chance.

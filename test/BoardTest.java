@@ -179,8 +179,8 @@ public class BoardTest {
     }
 
     /**
-     * Tests that the board is labelled the same way players type moves, columns A to O
-     * across the top and rows 1 to 15 down the side, so the centre square is at row 8, column H
+     * Tests that the board is labelled the same way players type moves: columns A to O
+     * across the top and rows 1 to 15 down the side. The centre square should be at 8H
      */
     @Test
     public void testToStringLabels() {

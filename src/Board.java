@@ -61,6 +61,11 @@ public class Board {
         }
         return grid[row][col];
     }
+
+    /**
+     * Returns true if board has no tiles, false if has a tile
+     * @return true if board is empty
+     */
     public boolean isEmpty() {
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < columns; col++) {
@@ -177,7 +182,7 @@ public class Board {
 
         for (int row = 0; row < rows; row++) {
             board += line;
-            board += String.format("%2d ", row + 1); //Row number on the left, starting at 1
+            board += String.format("%2d ", row + 1); //Row number on the left
 
             for (int col = 0; col < columns; col++) {
                 char letter = ' ';

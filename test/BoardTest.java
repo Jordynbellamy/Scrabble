@@ -130,11 +130,11 @@ public class BoardTest {
      */
     @Test
     public void testWordThroughExistingTile() {
-        board.placeWord(makeTiles("CAT"), CENTRE, 6, true);//A is at the centre of the board which is row 7, column 7
+        board.placeWord(makeTiles("BAR"), CENTRE, 6, true);//A is at the centre of the board which is row 7, column 7
 
-        assertTrue(board.isValidPlacement("HAT", 6, CENTRE, false));//A of HAT lands on the A of CAT
-        assertTrue(board.isValidPlacement("hat", 6, CENTRE, false));//Lowercase still matches
-        assertFalse(board.isValidPlacement("HOT", 6, CENTRE, false));//O of HOT would not land on the A
+        assertTrue(board.isValidPlacement("CAR", 6, CENTRE, false));//The A in CAR lands on the A of BAR
+        assertTrue(board.isValidPlacement("car", 6, CENTRE, false));//Lowercase still matches
+        assertFalse(board.isValidPlacement("BIT", 6, CENTRE, false));// I of BIT would not land on the A
     }
 
     /**
@@ -144,20 +144,20 @@ public class BoardTest {
     @Test
     public void testPlaceWord() {
         //Left to right: each letter goes in the next column of the same row
-        board.placeWord(makeTiles("CAT"), CENTRE, 6, true);
-        assertEquals('C', board.getTile(CENTRE, 6).getLetter());
+        board.placeWord(makeTiles("BAR"), CENTRE, 6, true);
+        assertEquals('B', board.getTile(CENTRE, 6).getLetter());
         assertEquals('A', board.getTile(CENTRE, 7).getLetter());
-        assertEquals('T', board.getTile(CENTRE, 8).getLetter());
+        assertEquals('R', board.getTile(CENTRE, 8).getLetter());
         assertNull(board.getTile(CENTRE, 9));//Nothing placed after the last letter
 
-        //top to bottom through the A of CAT
-        board.placeWord(makeTiles("HAT"), 6, CENTRE, false);
-        assertEquals('H', board.getTile(6, CENTRE).getLetter());
+        //top to bottom through the A of BAR
+        board.placeWord(makeTiles("BAR"), 6, CENTRE, false);
+        assertEquals('B', board.getTile(6, CENTRE).getLetter());
         assertEquals('A', board.getTile(7, CENTRE).getLetter());//The A from CAT is still there
-        assertEquals('T', board.getTile(8, CENTRE).getLetter());
+        assertEquals('R', board.getTile(8, CENTRE).getLetter());
 
         //Near the right edge: only C and A fit
-        board.placeWord(makeTiles("CAT"), 0, 13, true);
+        board.placeWord(makeTiles("CAR"), 0, 13, true);
         assertEquals('C', board.getTile(0, 13).getLetter());
         assertEquals('A', board.getTile(0, 14).getLetter());
     }
@@ -172,9 +172,9 @@ public class BoardTest {
         assertTrue(text.contains("*"));
         assertEquals(1 + Board.SIZE * 2 + 1, text.split("\n").length);
 
-        board.placeWord(makeTiles("CAT"), CENTRE, 6, true);
+        board.placeWord(makeTiles("BAR"), CENTRE, 6, true);
         text = board.toString();
-        assertTrue(text.contains("| C | A | T |"));
+        assertTrue(text.contains("| B | A | R |"));
         assertFalse(text.contains("*"));
     }
 }

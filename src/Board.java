@@ -126,21 +126,25 @@ public class Board {
      * @param isHorizontal true if the tiles go left to right, false if they go top to bottom
      */
     public void placeWord(List<Tile> tiles, int row, int col, boolean isHorizontal) {
-        int r = row;
-        int c = col;
-        int i = 0;
 
-        while (i < tiles.size() && isOnBoard(r, c)) {
-            if (grid[r][c] == null) {
-                grid[r][c] = tiles.get(i);
-                i ++;
+        for (int i = 0; i < tiles.size(); i++) {
+            int r = row;
+            int c = col;
+
+            if (isHorizontal) {
+                c = col + i;
+            } else {
+                r = row + i;
             }
 
-            //move to next square
-            if (isHorizontal) {
-                c++;
-            } else {
-                r++;
+            //Stop if the word goes off the board
+            if (!isOnBoard(r, c)) {
+                return;
+            }
+
+            //Only place a tile if the square is empty, tiles already on the board stay
+            if (grid[r][c] == null) {
+                grid[r][c] = tiles.get(i);
             }
         }
     }

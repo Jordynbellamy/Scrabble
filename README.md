@@ -1,10 +1,10 @@
 # Scrabble
 
-Milestone 1
+Milestone 1:
 
 Text-based Scrabble you play in the terminal. 2-4 players can place words or exchange tiles, and the game checks each move before updating the board and scores. Blank tiles and premium squares aren't in yet (that's Milestone 3).
 
-Running it
+Running it:
 
 Make sure wordlist.txt is in the same folder as the jar, then run:
 
@@ -26,11 +26,11 @@ What's included:
 - UML class diagram
 - 2 sequence diagrams: exchanging tiles and placing a word
   
-Current state
+Current state:
 
 Milestone 1 is complete. The game supports 2-4 players, shows each player's tiles, lets players place words using Scrabble notation, and checks every move (real words only, no overwriting tiles, reusing tiles already on the board). Scores update after each word, and players can exchange tiles to pass their turn. After every turn the board, scores and the next player's tiles are printed.
 
-Data structures
+Data structures:
 
 Tile bag - an ArrayList<Tile>, since the bag shrinks and grows as tiles are drawn and returned. It gets shuffled when it's created and whenever tiles go back in. We draw from the end of the list because removing the last item doesn't shift anything, and since the bag is shuffled the last tile is still random.
 
@@ -40,7 +40,7 @@ Board - a Tile[15][15] array, so any square can be looked up directly by row and
 
 Word list - a HashSet<String>, so checking if a word exists is quick instead of searching through 10,000 words every time.
 
-Testing
+Testing:
 
 JUnit 5 tests are in test/:
 
@@ -56,7 +56,7 @@ We didn't test the shuffle directly since it's random and a test for it could fa
 
 Failing tests: none, all tests pass.
 
-Known issues
+Known issues:
 
 - Player.addTile doesn't check if the rack is full. It's only used to set up racks in tests, so it doesn't affect the game.
 

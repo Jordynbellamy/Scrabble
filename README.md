@@ -54,7 +54,10 @@ Known issues
 
 Contributions: Milestone 1
 
-Kosi Chukwuezi - project setup, Tile, TileBag, Player, their JUnit tests, README
-Jackson - WordList, Scorer and their tests
-Jordyn Bellamy - Board and its tests
-Peculiar  - GameModel, its tests, placing-a-word sequence diagram, building the jar
+Kosi Chukwuezi: project setup, Tile, TileBag, Player, their JUnit tests, README
+
+Jackson: WordList, Scorer and their tests
+
+Jordyn Bellamy: Create repository, Board and its tests, UML diagram
+
+Peculiar: GameModel, its tests, placing-a-word sequence diagram, building the jar

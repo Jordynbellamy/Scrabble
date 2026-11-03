@@ -19,6 +19,12 @@ public class Board {
 
     private Tile[][] grid;
 
+    /**
+     * The default constructor for the Scrabble board, creates an empty 15 x 15 board
+     */
+    public Board() {
+        this(SIZE, SIZE);
+    }
 
     /**
      * The constructor for the Scrabble board, creates an empty board with a given number of rows and columns

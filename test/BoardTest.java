@@ -59,6 +59,11 @@ public class BoardTest {
      */
     @Test
     public void testGetTile() {
+        //Test default board
+        Board standard = new Board();
+        assertTrue(standard.isEmpty());
+        assertNull(standard.getTile(Board.SIZE - 1, Board.SIZE - 1));
+
         //Empty squares return null
         assertNull(board.getTile(0, 0));
         assertNull(board.getTile(CENTRE, CENTRE));

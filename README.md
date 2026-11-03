@@ -40,7 +40,9 @@ Board - a Tile[15][15] array, so any square can be looked up directly by row and
 
 Word list - a HashSet<String>, so checking if a word exists is quick instead of searching through 10,000 words every time.
 
+
 Testing:
+
 
 JUnit 5 tests are in test/:
 

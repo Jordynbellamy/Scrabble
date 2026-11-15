@@ -157,7 +157,6 @@ public class GameModelTest {
         assertEquals(1,view.events.size());
         assertSame(game,view.events.get(0).getSource());
         assertEquals("", view.events.get(0).getMessage());
-git
     }
     @Test
     public void rejectedMoveNotifiesViews() throws IOException{

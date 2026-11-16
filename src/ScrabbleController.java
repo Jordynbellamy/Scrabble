@@ -27,6 +27,7 @@ public class ScrabbleController implements ActionListener {
      *
      * @param e the click
      */
+    @Override
     public void actionPerformed(ActionEvent e) {
         String[] command = e.getActionCommand().split(" "); //"SQUARE 7 7" becomes ["SQUARE", "7", "7"]
 

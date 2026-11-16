@@ -4,14 +4,15 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Scanner;
 import java.util.Set;
 
 /**
- * Coordinates a text-based Scrabble game for two to four players.
- *@author Ojediran Peculiar
+ * Model for a Scrabble game with two to four players. Holds the board, tile bag,
+ * players and turn order, enforces the rules, and notifies registered
+ * {@link ScrabbleView}s whenever the game state changes (Java Event Model).
  *
- * 
+ * @author Ojediran Peculiar
+ * @author Kosi Chukwuezi
  */
 public class GameModel {
     private static final int MIN_PLAYERS = 2;
@@ -23,14 +24,18 @@ public class GameModel {
     private final WordList wordList;
     private final Scorer scorer;
     private final List<Player> players;
-    private final Scanner input;
     private int currentPlayerIndex;
     private String lastError = "";
+    private final List<ScrabbleView> views = new ArrayList<>();
 
-    /** Creates a game and deals seven tiles to each player. */
+    /**
+     * Creates a game and deals seven tiles to each player.
+     *
+     * @param numPlayers number of players (2 through 4)
+     */
     public GameModel(int numPlayers) {
         this(numPlayers, new Board(Board.SIZE, Board.SIZE), new TileBag(),
-                new WordList(), new Scorer(), new Scanner(System.in));
+                new WordList(), new Scorer());
     }
 
     /**
@@ -42,10 +47,9 @@ public class GameModel {
      * @param tileBag    tile bag
      * @param wordList   loaded dictionary
      * @param scorer     move scorer
-     * @param input      console input source
      */
     public GameModel(int numPlayers, Board board, TileBag tileBag,
-            WordList wordList, Scorer scorer, Scanner input) {
+                     WordList wordList, Scorer scorer) {
         if (numPlayers < MIN_PLAYERS || numPlayers > MAX_PLAYERS) {
             throw new IllegalArgumentException("Scrabble requires 2 to 4 players.");
         }
@@ -53,7 +57,6 @@ public class GameModel {
         this.tileBag = Objects.requireNonNull(tileBag, "tileBag");
         this.wordList = Objects.requireNonNull(wordList, "wordList");
         this.scorer = Objects.requireNonNull(scorer, "scorer");
-        this.input = Objects.requireNonNull(input, "input");
         this.players = new ArrayList<>();
         for (int i = 0; i < numPlayers; i++) {
             Player player = new Player("Player " + (i + 1));
@@ -80,6 +83,35 @@ public class GameModel {
     /** @return zero-based index of the current player */
     public int getCurrentPlayerIndex() {
         return currentPlayerIndex;
+    }
+
+    /**
+     * Subscribes a view so it is notified of every change to the game.
+     *
+     * @param v the view to add
+     */
+    public void addScrabbleView(ScrabbleView v) {
+        views.add(v);
+    }
+
+    /**
+     * Unsubscribes a view so it no longer receives updates.
+     *
+     * @param v the view to remove
+     */
+    public void removeScrabbleView(ScrabbleView v) {
+        views.remove(v);
+    }
+
+    /**
+     * Sends a ScrabbleEvent to every subscribed view. The event's message is
+     * the last error, or an empty string if the last action succeeded.
+     */
+    private void notifyViews() {
+        ScrabbleEvent e = new ScrabbleEvent(this, lastError);
+        for (ScrabbleView v : views) {
+            v.handleScrabbleUpdate(e);
+        }
     }
 
     /** @return the explanation for the last rejected move, or an empty string */
@@ -213,6 +245,7 @@ public class GameModel {
         getCurrentPlayer().addScore(points);
         getCurrentPlayer().refillRack(tileBag);
         advanceTurn();
+        notifyViews();
         return true;
     }
 
@@ -242,6 +275,7 @@ public class GameModel {
         getCurrentPlayer().refillRack(tileBag); // Draw BEFORE returning old tiles.
         tileBag.returnTiles(returned);
         advanceTurn();
+        notifyViews();
         return true;
     }
 
@@ -249,65 +283,23 @@ public class GameModel {
     public void passTurn() {
         lastError = "";
         advanceTurn();
-    }
-
-    /** Runs the console interface for Milestone 1 until the user chooses QUIT. */
-    public void play() {
-        System.out.println("SCRABBLE - Milestone 1 (no premium squares or blank tiles)");
-        System.out.println("PLAY <coordinate> <word>  e.g. PLAY 8H HELLO");
-        System.out.println("8H = across on row 8 from column H; H8 = down from H8");
-        System.out.println("EXCHANGE <letters>  |  PASS  |  QUIT");
-        while (true) {
-            printState();
-            System.out.print(getCurrentPlayer().getName() + "> ");
-            if (!input.hasNextLine()) {
-                break;
-            }
-            String line = input.nextLine().trim();
-            if (line.equalsIgnoreCase("QUIT")) {
-                break;
-            }
-            if (line.equalsIgnoreCase("PASS")) {
-                passTurn();
-                continue;
-            }
-            String[] parts = line.split("\\s+");
-            boolean accepted;
-            if (parts.length == 3 && parts[0].equalsIgnoreCase("PLAY")) {
-                accepted = playWord(parts[1], parts[2]);
-            } else if (parts.length == 2 && parts[0].equalsIgnoreCase("EXCHANGE")) {
-                accepted = exchangeTiles(parts[1]);
-            } else {
-                accepted = reject("Try PLAY 8H HELLO, EXCHANGE AE, PASS, or QUIT.");
-            }
-            if (!accepted) {
-                System.out.println("Move rejected: " + lastError);
-            }
-        }
-        System.out.println("Game ended. Final scores:");
-        for (Player player : players) {
-            System.out.println(player.getName() + ": " + player.getScore());
-        }
-    }
-
-    /** Prints the board, scores, and current player's rack. */
-    public void printState() {
-        System.out.println("\n" + board);
-        for (Player player : players) {
-            System.out.println(player.getName() + ": " + player.getScore()
-                    + " points, rack: " + player.getRack());
-        }
-        System.out.println("Next player: " + getCurrentPlayer().getName());
-        System.out.println("Rack: " + getCurrentPlayer().getRack());
-        System.out.println("Tiles in bag: " + tileBag.size());
+        notifyViews();
     }
 
     private void advanceTurn() {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
     }
 
+    /**
+     * Records why a move was rejected and tells the views, so the GUI can
+     * show the message.
+     *
+     * @param message explanation shown to the player
+     * @return always false, so callers can write {@code return reject(...)}
+     */
     private boolean reject(String message) {
         lastError = message;
+        notifyViews();
         return false;
     }
 
@@ -402,23 +394,5 @@ public class GameModel {
             c += dc;
         }
         return word.toString();
-    }
-
-    /** Entry point for a console game. */
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Number of players (2-4): ");
-        if (!scanner.hasNextInt()) {
-            System.out.println("Enter a number between 2 and 4.");
-            return;
-        }
-        int count = scanner.nextInt();
-        scanner.nextLine(); // Consume the rest of the first input line.
-        try {
-            new GameModel(count, new Board(Board.SIZE, Board.SIZE), new TileBag(),
-                    new WordList(), new Scorer(), scanner).play();
-        } catch (IllegalArgumentException | IllegalStateException exception) {
-            System.out.println("Cannot start game: " + exception.getMessage());
-        }
     }
 }

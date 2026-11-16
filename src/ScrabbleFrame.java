@@ -94,12 +94,14 @@ public class ScrabbleFrame extends JFrame implements ScrabbleView {
                 Tile tile = model.getBoard().getTile(row, col);
                 if (tile != null) {
                     squares[row][col].setText("" + tile.getLetter());
+                    squares[row][col].setBackground(Color.LIGHT_GRAY); //Placed tiles are grey
                 } else if (row == Board.SIZE / 2 && col == Board.SIZE / 2) {
                     squares[row][col].setText("*");
+                    squares[row][col].setBackground(null); //null goes back to the normal button colour
                 } else {
                     squares[row][col].setText("");
+                    squares[row][col].setBackground(null); //Removes the highlight from a selected square
                 }
-                squares[row][col].setBackground(null); //Removes the highlight from a selected square
             }
         }
 

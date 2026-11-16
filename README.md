@@ -156,8 +156,7 @@ Known issues:
 - The word list includes some names and abbreviations that aren't allowed in real Scrabble.
 
 Contributions: Milestone 2
-
-Kosi Chukwuezi: [fill in]
+Kosi Chukwuezi - Created ScrabbleView and ScrabbleEvent. Updated GameModel to notify views and removed Scanner input. Added view notification tests to GameModelTest.
 
 Iniodu Jackson: [fill in]
 

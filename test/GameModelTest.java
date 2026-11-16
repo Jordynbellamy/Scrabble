@@ -1,5 +1,6 @@
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,13 +9,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
-import java.util.Scanner;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Milestone 1 GameModel integration tests.
+ * Milestone 1 and Milestone 2 GameModel integration tests.
  *
  * These require the implemented Board (not its current placeholders),
  * Player from feature/tiles, and WordList and Scorer from the board branch.
@@ -59,7 +59,7 @@ public class GameModelTest {
         ScriptedTileBag bag = new ScriptedTileBag(
                 "HELLOWRCATENDS" + "AAAAAAAAAAAAAAAAAAAA");
         return new GameModel(2, new Board(15, 15), bag,
-                new WordList(dictionary), new Scorer(), new Scanner(""));
+                new WordList(dictionary), new Scorer());
     }
 
     @Test
@@ -69,10 +69,10 @@ public class GameModelTest {
         assertEquals(7, game.getCurrentPlayer().getRack().size());
         assertThrows(IllegalArgumentException.class,
                 () -> new GameModel(1, game.getBoard(), new TileBag(),
-                        new WordList(tempDir.resolve("words.txt")), new Scorer(), new Scanner("")));
+                        new WordList(tempDir.resolve("words.txt")), new Scorer()));
         assertThrows(IllegalArgumentException.class,
                 () -> new GameModel(5, game.getBoard(), new TileBag(),
-                        new WordList(tempDir.resolve("words.txt")), new Scorer(), new Scanner("")));
+                        new WordList(tempDir.resolve("words.txt")), new Scorer()));
     }
 
     @Test
@@ -139,4 +139,61 @@ public class GameModelTest {
         assertFalse(game.playWord("15N", "HELLO"));
         assertEquals(0, game.getCurrentPlayerIndex());
     }
+
+    private static class RecordingView implements ScrabbleView{
+        List<ScrabbleEvent> events = new ArrayList<>();
+
+        @Override
+        public void handleScrabbleUpdate(ScrabbleEvent e) {
+
+        }
+    }
+    @Test
+    public void validMoveNotifiesViews() throws IOException{
+        GameModel game = createGame();
+        RecordingView view = new RecordingView();
+        game.addScrabbleView(view);
+        assertTrue(game.playWord("8H", "HELLO"), game.getLastError());
+        assertEquals(1,view.events.size());
+        assertSame(game,view.events.get(0).getSource());
+        assertEquals("", view.events.get(0).getMessage());
+    }
+    @Test
+    public void rejectedMoveNotifiesViews() throws IOException{
+        GameModel game = createGame();
+        RecordingView view = new RecordingView();
+        game.addScrabbleView(view);
+        assertFalse(game.playWord("9H", "HELLO"));
+        assertEquals(1, view.events.size());
+        assertFalse(view.events.get(0).getMessage().isEmpty());
+        assertEquals(game.getLastError(), view.events.get(0).getMessage());
+    }
+
+    @Test
+    public void passNotifiesViews() throws IOException{
+        GameModel game = createGame();
+        RecordingView view = new RecordingView();
+        game.addScrabbleView(view);
+        game.passTurn();
+        assertEquals(1,view.events.size());
+    }
+    @Test
+    public void exchangeNotifiesViews() throws  IOException{
+        GameModel game = createGame();
+        RecordingView view = new RecordingView();
+        game.addScrabbleView(view);
+        assertTrue(game.exchangeTiles("HE"),game.getLastError());
+        assertEquals(1,view.events.size());
+    }
+
+    @Test
+    public void removedViewsIsNotNotified() throws IOException{
+        GameModel game = createGame();
+        RecordingView view = new RecordingView();
+        game.addScrabbleView(view);
+        game.removeScrabbleView(view);
+        game.passTurn();
+        assertTrue(view.events.isEmpty());
+    }
+
 }

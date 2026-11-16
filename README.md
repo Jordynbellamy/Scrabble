@@ -77,3 +77,90 @@ Iniodu Jackson: WordList, Scorer and their tests, exchanging tiles sequence diag
 Jordyn Bellamy: Create repository, Board and its tests, UML diagram, building the jar, submitting to Brightspace
 
 Peculiar Ojediran: GameModel, its tests, placing-a-word sequence diagram
+
+---
+
+Milestone 2:
+
+Scrabble now has a graphical interface and is played with the mouse instead of typed commands. 2-4 players take turns placing words, exchanging tiles or passing, and the game still checks each move before updating the board and scores. The game now uses the MVC pattern and the Java Event Model. Blank tiles and premium squares aren't in yet (that's Milestone 3).
+
+Running it:
+
+Make sure wordlist.txt is in the same folder as the jar, then run:
+
+java -jar Scrabble.jar
+
+To run it from IntelliJ, run ScrabbleFrame (it has the main method). GameModel no longer has a main method.
+
+How to play:
+
+- Pick the number of players (2-4) in the box that opens
+- To place a word, click the square the word starts on (it turns yellow), type the whole word in the Letters box, pick Across or Down, then click Play Word
+- If your word goes through tiles already on the board, type the whole word including those letters. For example, if WORD is on the board, click the W and type WATCH to play WATCH down
+- To exchange tiles, type the letters you want to swap in the Letters box (for example AE) and click Exchange. This ends your turn
+- To skip your turn, click Pass
+- If a move isn't allowed, the reason is shown at the bottom of the window and it's still your turn
+
+What's included:
+
+- Scrabble.jar - source code, compiled classes and JUnit tests
+- src/ - the game code
+- test/ - JUnit 5 tests
+- wordlist.txt - the word list
+- UML class diagram, updated for Milestone 2
+- 2 sequence diagrams, updated for the GUI: placing a word and exchanging tiles
+
+Current state:
+
+Milestone 2 is complete. The game opens in a JFrame and asks for the number of players. The window shows the board, every player's score, and the current player's tiles. Players place words, exchange tiles and pass using the mouse, and the game moves to the next player after each of these. Placed tiles are grey and the selected starting square is yellow. Every move is still checked by the model (real words only, no overwriting tiles, reusing tiles already on the board, first word on the centre square, words must connect).
+
+The game follows MVC:
+
+- Model: GameModel holds the game and enforces the rules. It doesn't use any Swing code
+- View: ScrabbleFrame displays the game. It implements ScrabbleView, so the model can send it updates
+- Controller: ScrabbleController handles every button click and calls the matching method on the model
+
+It uses the Java Event Model: after every move, GameModel sends a ScrabbleEvent to each ScrabbleView. If the event's message is empty the move worked and the frame redraws itself from the model. Otherwise the message says why the move was rejected and the frame shows it.
+
+Changes since Milestone 1:
+
+- GameModel no longer has main, play, printState or the Scanner. The console game was replaced by the GUI, so the model doesn't need to read input or print anything anymore
+- GameModel has a list of ScrabbleViews, with addScrabbleView, removeScrabbleView and notifyViews. This is how the Java Event Model tells the view the game changed, so the view never has to check the model by itself
+- GameModel now notifies the views when a move is rejected too, so the reason can be shown in the window
+- Added ScrabbleEvent, which extends EventObject. It carries the model as the source and a message that is empty if the move worked or holds the error if it didn't
+- Added the ScrabbleView interface, ScrabbleFrame (the view) and ScrabbleController (the controller) to complete MVC
+- The UML class diagram was updated with the four new classes and the new GameModel fields and methods, and the removed console methods were taken out
+- The sequence diagrams now start from a mouse click in ScrabbleFrame and go through ScrabbleController, instead of starting from typed commands
+
+New data structures:
+
+Views - GameModel keeps an ArrayList<ScrabbleView>. A list lets more than one view watch the same game, and views can be added and removed.
+
+Board buttons - ScrabbleFrame keeps a JButton[15][15] array that matches the board array, so updating the square at a row and column is a direct lookup.
+
+The tile bag, player rack, board and word list are the same as in Milestone 1.
+
+Testing:
+
+There are no GUI tests, as allowed for this milestone. TileTest, TileBagTest, PlayerTest, BoardTest, WordListTest and ScorerTest are the same as in Milestone 1.
+
+GameModelTest - updated for the new GameModel constructor (it no longer takes a Scanner). New tests check that views get an event with no message after a word, exchange or pass, that views get the error message after a rejected move, and that views can be added and removed.
+
+Failing tests: none, all tests pass.
+
+Known issues:
+
+- Player.addTile still doesn't check if the rack is full. It's only used to set up racks in tests, so it doesn't affect the game.
+- The current player's tiles are shown as text, for example A(1), instead of as tile buttons.
+- The game has no ending yet. It keeps going until the window is closed, even if every player passes or the bag runs out.
+- The word list includes some names and abbreviations that aren't allowed in real Scrabble.
+
+Contributions: Milestone 2
+
+Kosi Chukwuezi: [fill in]
+
+Iniodu Jackson: [fill in]
+
+Jordyn Bellamy: ScrabbleFrame (the view), ScrabbleController (the controller), updating GameModelTest for the event model, README, building the jar, submitting to Brightspace
+
+Peculiar Ojediran: [fill in]

@@ -163,4 +163,4 @@ Iniodu Jackson: [fill in]
 
 Jordyn Bellamy: ScrabbleFrame (the view), ScrabbleController (the controller), updating GameModelTest for the event model, README, building the jar, submitting to Brightspace
 
-Peculiar Ojediran: [fill in]
+Peculiar Ojediran: Created and edited the UML and Sequence diagram for the updated database.

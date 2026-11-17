@@ -4,11 +4,11 @@ Milestone 1:
 
 Text-based Scrabble you play in the terminal. 2-4 players can place words or exchange tiles, and the game checks each move before updating the board and scores. Blank tiles and premium squares aren't in yet (that's Milestone 3).
 
-Running it:
-
-Make sure wordlist.txt is in the same folder as the jar, then run:
+Run:
 
 java -jar Scrabble.jar
+
+wordlist.txt is included inside the jar.
 
 Moves use Scrabble notation:
 
@@ -159,8 +159,8 @@ Contributions: Milestone 2
 
 Kosi Chukwuezi - Created ScrabbleView and ScrabbleEvent. Updated GameModel to notify views and removed Scanner input. Added view notification tests to GameModelTest.
 
-Iniodu Jackson: Created and edited the UML diagram for the updated database.
+Iniodu Jackson: Updated the UML class diagram for Milestone 2.
 
 Jordyn Bellamy: ScrabbleFrame (the view), ScrabbleController (the controller), updating GameModelTest for the event model, README, building the jar, submitting to Brightspace
 
-Peculiar Ojediran: Created and edited the Sequence diagram for the updated database.
+Peculiar Ojediran: Updated the two sequence diagrams for Milestone 2.

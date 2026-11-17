@@ -159,8 +159,8 @@ Contributions: Milestone 2
 
 Kosi Chukwuezi - Created ScrabbleView and ScrabbleEvent. Updated GameModel to notify views and removed Scanner input. Added view notification tests to GameModelTest.
 
-Iniodu Jackson: [fill in]
+Iniodu Jackson: Created and edited the UML diagram for the updated database.
 
 Jordyn Bellamy: ScrabbleFrame (the view), ScrabbleController (the controller), updating GameModelTest for the event model, README, building the jar, submitting to Brightspace
 
-Peculiar Ojediran: Created and edited the UML and Sequence diagram for the updated database.
+Peculiar Ojediran: Created and edited the Sequence diagram for the updated database.

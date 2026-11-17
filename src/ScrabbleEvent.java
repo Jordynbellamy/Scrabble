@@ -1,6 +1,8 @@
 /**
  * Event sent by the GameModel to its views whenever the game state changes.
- *  * The source of the event is the GameModel, so a view can read the updated board, players and scores from it
+ * The source of the event is the GameModel, so a view can read the updated board, players and scores from it
+ *
+ *  * @author Kosi Chukwuezi
  */
 
 import java.util.EventObject;
